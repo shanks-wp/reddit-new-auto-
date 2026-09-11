@@ -79,7 +79,7 @@ def run_iteration(iteration: int, run_date: str) -> bool:
     command = [sys.executable, "main.py"]
     print(f"Starting video {iteration}/{VIDEO_COUNT}", flush=True)
     try:
-        subprocess.run(command, cwd=ROOT, check=True)
+        subprocess.run(command, cwd=ROOT, check=True, stdin=subprocess.DEVNULL)
     except subprocess.CalledProcessError as error:
         print(f"Video {iteration}/{VIDEO_COUNT} failed with exit code {error.returncode}", flush=True)
         return False

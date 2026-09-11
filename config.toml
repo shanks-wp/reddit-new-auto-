@@ -10,12 +10,6 @@ resolution_w = 1080
 resolution_h = 1920
 opacity = 1.0
 zoom = 1.0
-background_audio_volume = 0.15
-enable_extra_audio = false
-background_thumbnail = false
-background_thumbnail_font_family = "arial"
-background_thumbnail_font_size = 96
-background_thumbnail_font_color = "255,255,255"
 storymode = false
 storymodemethod = 0
 storymode_max_length = 2000
@@ -50,15 +44,15 @@ background_thumbnail_font_size = 96
 background_thumbnail_font_color = "255,255,255"
 
 [reddit.creds]
-client_id = "dummydummydummy123"
-client_secret = "dummydummydummydummydummy123"
-username = "dummyuser123"
-password = "dummypassword123"
+client_id = "DummyRedditClientID123456"
+client_secret = "DummyRedditClientSecret1234567890"
+username = "DummyUsername123"
+password = "DummyPassword123"
 2fa = false
 
 [reddit.thread]
-random = false
-subreddit = "AskReddit"
+random = true
+subreddit = "AskReddit+Showerthoughts+TrueOffMyChest+AmItheAsshole"
 post_id = ""
 max_comment_length = 500
 min_comment_length = 1

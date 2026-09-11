@@ -4,6 +4,15 @@ on:
   schedule:
     - cron: "0 6 * * *"
   workflow_dispatch:
+    inputs:
+      tts_engine:
+        description: "Zero-auth TTS engine"
+        required: false
+        default: "streamlabspolly"
+        type: choice
+        options:
+          - streamlabspolly
+          - googletranslate
 
 jobs:
   generate-and-upload:
@@ -42,15 +51,29 @@ jobs:
       - name: Prepare output directories
         run: mkdir -p results video_creation/data
 
-      - name: Verify non-interactive configuration
-        run: |
-          test -f config.toml
-          grep -q 'voice_choice = "streamlabspolly"' config.toml
-          grep -q 'streamlabs_polly_voice = "Brian"' config.toml
-          grep -q 'tiktok_sessionid = ""' config.toml
+      - name: Cache background assets
+        uses: actions/cache@v4
+        with:
+          path: assets/backgrounds
+          key: backgrounds-${{ runner.os }}-v1
 
-      - name: Generate daily batch
-        run: python scripts/run_daily_batch.py
+      - name: Preflight config validation
+        run: python scripts/preflight_config.py
+
+      - name: Render daily batch
+        run: |
+          mkdir -p results
+          python scripts/run_daily_batch.py < /dev/null
+
+      - name: Upload run logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: batch-logs
+          path: |
+            results/daily_manifest.csv
+            video_creation/data/videos.json
+          if-no-files-found: warn
 
       - name: Upload videos to Google Drive
         if: always()
