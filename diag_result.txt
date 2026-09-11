@@ -1,0 +1,17 @@
+python: 3.12.10 (tags/v3.12.10:0cc8128, Apr  8 2025, 12:21:36) [MSC v.1943 64 bit (AMD64)]
+gtts: OK
+rich: OK
+playwright: OK
+translators: OK
+yt_dlp: OK
+flask: OK
+tomlkit: OK
+moviepy: OK
+praw: OK
+prawcore: OK
+pyttsx3: OK
+spacy: OK
+requests: OK
+toml: OK
+ffmpeg_on_path: None
+ffmpeg_local: False
