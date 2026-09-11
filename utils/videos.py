@@ -1,9 +1,19 @@
 import json
 import time
+from pathlib import Path
 from typing import Union
 
 from utils import settings
 from utils.console import print_step
+
+TRACKING_FILE = Path("video_creation/data/videos.json")
+
+
+def ensure_tracking_file() -> Path:
+    TRACKING_FILE.parent.mkdir(parents=True, exist_ok=True)
+    if not TRACKING_FILE.exists():
+        TRACKING_FILE.write_text("[]\n", encoding="utf-8")
+    return TRACKING_FILE
 
 
 class Submission:
@@ -41,7 +51,7 @@ def check_done(
         # Assume it's a dict with thread_id
         post_id = redditobj.get("thread_id", "")
     
-    with open("./video_creation/data/videos.json", "r", encoding="utf-8") as done_vids_raw:
+    with ensure_tracking_file().open("r", encoding="utf-8") as done_vids_raw:
         done_videos = json.load(done_vids_raw)
     for video in done_videos:
         if video["id"] == post_id:
@@ -65,7 +75,7 @@ def save_data(subreddit: str, filename: str, reddit_title: str, reddit_id: str, 
         @param reddit_id:
         @param reddit_title:
     """
-    with open("./video_creation/data/videos.json", "r+", encoding="utf-8") as raw_vids:
+    with ensure_tracking_file().open("r+", encoding="utf-8") as raw_vids:
         done_vids = json.load(raw_vids)
         if reddit_id in [video["id"] for video in done_vids]:
             return  # video already done but was specified to continue anyway in the config file

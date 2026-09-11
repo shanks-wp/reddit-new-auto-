@@ -39,12 +39,16 @@ jobs:
           printf '%s' "${RCLONE_CONFIG_B64}" | base64 --decode > "${HOME}/.config/rclone/rclone.conf"
           chmod 600 "${HOME}/.config/rclone/rclone.conf"
 
+      - name: Prepare output directories
+        run: mkdir -p results video_creation/data
+
       - name: Generate daily batch
         run: python scripts/run_daily_batch.py
 
       - name: Upload videos to Google Drive
         if: always()
         run: |
+          mkdir -p results
           rclone copy ./results/ "gdrive:RedditVideos/$(date +%Y-%m-%d)/"
 
       - name: Back up results as workflow artifact

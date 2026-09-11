@@ -26,6 +26,9 @@ def sanitize_filename(title: str) -> str:
 
 
 def load_tracking() -> list[dict]:
+    TRACKING_FILE.parent.mkdir(parents=True, exist_ok=True)
+    if not TRACKING_FILE.exists():
+        TRACKING_FILE.write_text("[]\n", encoding="utf-8")
     with TRACKING_FILE.open(encoding="utf-8") as handle:
         return json.load(handle)
 
@@ -96,6 +99,7 @@ def run_iteration(iteration: int, run_date: str) -> bool:
 
 
 def main() -> int:
+    RESULTS_DIR.mkdir(parents=True, exist_ok=True)
     run_date = date.today().isoformat()
     successes = 0
     for iteration in range(1, VIDEO_COUNT + 1):
