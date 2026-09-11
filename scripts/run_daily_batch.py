@@ -19,6 +19,19 @@ MANIFEST_FILE = RESULTS_DIR / "daily_manifest.csv"
 VIDEO_COUNT = 10
 
 
+def verify_config() -> None:
+    config_file = ROOT / "config.toml"
+    if not config_file.is_file():
+        raise FileNotFoundError(
+            f"Required non-interactive configuration is missing: {config_file}"
+        )
+    config_text = config_file.read_text(encoding="utf-8")
+    if 'voice_choice = "streamlabspolly"' not in config_text:
+        raise ValueError("config.toml must use the non-interactive Streamlabs Polly TTS engine")
+    if 'tiktok_sessionid = ""' not in config_text:
+        raise ValueError("config.toml must not require a TikTok session ID")
+
+
 def sanitize_filename(title: str) -> str:
     cleaned = re.sub(r'[<>:"/\\|?*]', "", title)
     cleaned = re.sub(r"\s+", " ", cleaned).strip().rstrip(".")
@@ -99,6 +112,7 @@ def run_iteration(iteration: int, run_date: str) -> bool:
 
 
 def main() -> int:
+    verify_config()
     RESULTS_DIR.mkdir(parents=True, exist_ok=True)
     run_date = date.today().isoformat()
     successes = 0

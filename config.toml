@@ -1,0 +1,69 @@
+[ai]
+ai_similarity_enabled = false
+ai_similarity_keywords = ""
+
+[settings]
+allow_nsfw = false
+theme = "dark"
+times_to_run = 1
+resolution_w = 1080
+resolution_h = 1920
+opacity = 1.0
+zoom = 1.0
+background_audio_volume = 0.15
+enable_extra_audio = false
+background_thumbnail = false
+background_thumbnail_font_family = "arial"
+background_thumbnail_font_size = 96
+background_thumbnail_font_color = "255,255,255"
+storymode = false
+storymodemethod = 0
+storymode_max_length = 2000
+channel_name = "Reddit Tales"
+
+[settings.tts]
+voice_choice = "streamlabspolly"
+random_voice = false
+elevenlabs_voice_name = "Bella"
+elevenlabs_api_key = ""
+aws_polly_voice = "Matthew"
+streamlabs_polly_voice = "Brian"
+tiktok_voice = "en_us_001"
+tiktok_sessionid = ""
+python_voice = "1"
+py_voice_num = "2"
+silence_duration = 0.3
+no_emojis = false
+openai_api_url = "https://api.openai.com/v1/"
+openai_api_key = ""
+openai_voice_name = "alloy"
+openai_model = "tts-1"
+
+[settings.background]
+background_video = "minecraft"
+background_audio = "lofi"
+background_audio_volume = 0.15
+enable_extra_audio = false
+background_thumbnail = false
+background_thumbnail_font_family = "arial"
+background_thumbnail_font_size = 96
+background_thumbnail_font_color = "255,255,255"
+
+[reddit.creds]
+client_id = "dummydummydummy123"
+client_secret = "dummydummydummydummydummy123"
+username = "dummyuser123"
+password = "dummypassword123"
+2fa = false
+
+[reddit.thread]
+random = false
+subreddit = "AskReddit"
+post_id = ""
+max_comment_length = 500
+min_comment_length = 1
+post_lang = ""
+min_comments = 20
+blocked_words = ""
+max_comments_to_read = 5
+min_comments_to_read = 3

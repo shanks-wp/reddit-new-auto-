@@ -42,6 +42,13 @@ jobs:
       - name: Prepare output directories
         run: mkdir -p results video_creation/data
 
+      - name: Verify non-interactive configuration
+        run: |
+          test -f config.toml
+          grep -q 'voice_choice = "streamlabspolly"' config.toml
+          grep -q 'streamlabs_polly_voice = "Brian"' config.toml
+          grep -q 'tiktok_sessionid = ""' config.toml
+
       - name: Generate daily batch
         run: python scripts/run_daily_batch.py
 
