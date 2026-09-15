@@ -3,7 +3,6 @@ import time
 import html
 from typing import Dict, List
 import feedparser
-from playwright.sync_api import sync_playwright
 
 from utils import settings
 from utils.console import print_step, print_substep
@@ -18,35 +17,6 @@ except ImportError:
 
 REDDIT_RSS_BASE = "https://www.reddit.com"
 
-def _fetch_rss_via_browser(url: str) -> str:
-    try:
-        import os
-
-        user_data_dir = os.path.expanduser(r"~\AppData\Local\Google\Chrome\User Data")
-        with sync_playwright() as p:
-            browser = p.chromium.launch_persistent_context(
-                user_data_dir,
-                channel="chrome",
-                headless=False,
-                args=[
-                    "--profile-directory=Default",
-                    "--no-first-run",
-                    "--disable-session-crashed-bubble",
-                    "--disable-infobars",
-                ],
-            )
-            page = browser.pages[0] if browser.pages else browser.new_page()
-            response = page.goto(url, wait_until="domcontentloaded")
-            page.wait_for_timeout(3000)
-            print(f"DEBUG: status={response.status if response else 'None'}, final_url={page.url}")
-            body_text = response.text() if response else ""
-            print(f"DEBUG: response body length={len(body_text)}, first 300 chars={body_text[:300]}")
-            browser.close()
-            return body_text
-    except Exception as error:
-        print(f"RSS browser fetch error: {type(error).__name__}: {error}")
-        raise
-
 def _extract_post_id_from_link(link: str) -> str:
     match = re.search(r"/comments/([a-zA-Z0-9]+)/", link)
     if not match:
@@ -60,19 +30,21 @@ def _clean_html(raw_html: str) -> str:
     return text
 
 def _fetch_feed_with_retry(url: str, retries: int = 3, delay: float = 2.0):
+    headers = {
+        "User-Agent": (
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+            "AppleWebKit/537.36 (KHTML, like Gecko) "
+            "Chrome/124.0.0.0 Safari/537.36"
+        )
+    }
     for attempt in range(retries):
-        try:
-            raw_xml = _fetch_rss_via_browser(url)
-            feed = feedparser.parse(raw_xml)
-        except Exception as error:
-            print(f"RSS retry wrapper error on attempt {attempt + 1}: {type(error).__name__}: {error}")
-            raise
+        feed = feedparser.parse(url, request_headers=headers)
         if not feed.bozo and feed.entries:
             return feed
         if feed.bozo:
             print(f"RSS parse error: {type(feed.bozo_exception).__name__}: {feed.bozo_exception}")
         time.sleep(delay)
-    raise ConnectionError(f"Failed to fetch RSS feed from {url}. Check your internet connection.")
+    raise ConnectionError(f"Failed to fetch RSS feed from {url} after {retries} attempts.")
 
 def get_subreddit_threads(POST_ID: str = None):
     print_step("Getting subreddit threads via RSS (Ultimate JSON API bypass)")
