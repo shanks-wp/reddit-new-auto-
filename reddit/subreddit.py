@@ -3,6 +3,7 @@ import time
 import html
 from typing import Dict, List
 import feedparser
+import requests
 
 from utils import settings
 from utils.console import print_step, print_substep
@@ -37,14 +38,21 @@ def _fetch_feed_with_retry(url: str, retries: int = 3, delay: float = 2.0):
             "Chrome/124.0.0.0 Safari/537.36"
         )
     }
+    last_status = "unknown"
     for attempt in range(retries):
-        feed = feedparser.parse(url, request_headers=headers)
-        if not feed.bozo and feed.entries:
-            return feed
-        if feed.bozo:
-            print(f"RSS parse error: {type(feed.bozo_exception).__name__}: {feed.bozo_exception}")
+        response = requests.get(url, headers=headers, timeout=15)
+        last_status = response.status_code
+        if response.status_code == 200:
+            feed = feedparser.parse(response.text)
+            if not feed.bozo and feed.entries:
+                return feed
+            if feed.bozo:
+                print(f"RSS parse error: {type(feed.bozo_exception).__name__}: {feed.bozo_exception}")
         time.sleep(delay)
-    raise ConnectionError(f"Failed to fetch RSS feed from {url} after {retries} attempts.")
+    raise ConnectionError(
+        f"Failed to fetch RSS feed from {url} after {retries} attempts. "
+        f"Last status: {last_status}"
+    )
 
 def get_subreddit_threads(POST_ID: str = None):
     print_step("Getting subreddit threads via RSS (Ultimate JSON API bypass)")
