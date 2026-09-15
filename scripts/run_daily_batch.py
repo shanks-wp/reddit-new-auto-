@@ -8,6 +8,7 @@ import json
 import re
 import subprocess
 import sys
+import time
 from datetime import date
 from pathlib import Path
 
@@ -122,6 +123,9 @@ def main() -> int:
                 successes += 1
         except Exception as error:
             print(f"Video {iteration}/{VIDEO_COUNT} failed: {type(error).__name__}: {error}", flush=True)
+        if iteration < VIDEO_COUNT:
+            print("Waiting 15 seconds before the next video...", flush=True)
+            time.sleep(15)
     print(f"Batch complete: {successes}/{VIDEO_COUNT} videos succeeded", flush=True)
     return 0 if successes else 1
 

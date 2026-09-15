@@ -60,16 +60,6 @@ jobs:
       - name: Preflight config validation
         run: python scripts/preflight_config.py
 
-      - name: Diagnose Reddit RSS access
-        run: |
-          python -c "
-          import requests
-          headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36'}
-          r = requests.get('https://www.reddit.com/r/AskReddit/top/.rss', headers=headers, timeout=15)
-          print('STATUS:', r.status_code)
-          print('FIRST 500 CHARS:', r.text[:500])
-          "
-
       - name: Render daily batch
         run: |
           mkdir -p results

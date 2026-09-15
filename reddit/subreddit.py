@@ -30,7 +30,7 @@ def _clean_html(raw_html: str) -> str:
     text = re.sub(r"\s+", " ", text).strip()
     return text
 
-def _fetch_feed_with_retry(url: str, retries: int = 3, delay: float = 2.0):
+def _fetch_feed_with_retry(url: str, retries: int = 4, delay: float = 5.0):
     headers = {
         "User-Agent": (
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
@@ -48,7 +48,9 @@ def _fetch_feed_with_retry(url: str, retries: int = 3, delay: float = 2.0):
                 return feed
             if feed.bozo:
                 print(f"RSS parse error: {type(feed.bozo_exception).__name__}: {feed.bozo_exception}")
-        time.sleep(delay)
+        elif response.status_code == 429:
+            print("Rate limited (429), backing off...")
+        time.sleep(delay * (attempt + 1))
     raise ConnectionError(
         f"Failed to fetch RSS feed from {url} after {retries} attempts. "
         f"Last status: {last_status}"
