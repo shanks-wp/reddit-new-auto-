@@ -190,22 +190,14 @@ def get_screenshots_of_reddit_posts(reddit_object: dict, screenshot_num: int):
                 post_locator.screenshot(path=postcontentpath)
         except Exception as e:
             print_substep("Something went wrong!", style="red")
-            resp = input(
-                "Something went wrong with making the screenshots! Do you want to skip the post? (y/n) "
+            save_data("", "", "skipped", reddit_id, "")
+            print_substep(
+                "The post is automatically skipped because its screenshot could not be created.",
+                "yellow",
             )
-
-            if resp.casefold().startswith("y"):
-                save_data("", "", "skipped", reddit_id, "")
-                print_substep(
-                    "The post is successfully skipped! You can now restart the program and this post will skipped.",
-                    "green",
-                )
-
-            resp = input("Do you want the error traceback for debugging purposes? (y/n)")
-            if not resp.casefold().startswith("y"):
-                exit()
-
-            raise e
+            raise RuntimeError(
+                f"Unable to create the title screenshot for post {reddit_id}"
+            ) from e
 
         if storymode:
             page.locator('[data-click-id="text"]').first.screenshot(
