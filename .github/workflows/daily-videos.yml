@@ -65,6 +65,14 @@ jobs:
           mkdir -p results
           python scripts/run_daily_batch.py < /dev/null
 
+      - name: Upload debug screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: debug-screenshots
+          path: debug_page_*.png
+          if-no-files-found: ignore
+
       - name: Upload run logs
         if: always()
         uses: actions/upload-artifact@v4
