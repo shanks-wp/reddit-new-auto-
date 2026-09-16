@@ -171,6 +171,13 @@ def get_screenshots_of_reddit_posts(reddit_object: dict, screenshot_num: int):
         postcontentpath = f"assets/temp/{reddit_id}/png/title.png"
         try:
             # Support both new Shreddit UI and old Reddit UI
+            try:
+                page.wait_for_selector(
+                    "shreddit-post, [data-test-id='post-content']",
+                    timeout=15000,
+                )
+            except Exception:
+                pass
             if page.locator("shreddit-post").count() > 0:
                 post_locator = page.locator("shreddit-post").first
             else:

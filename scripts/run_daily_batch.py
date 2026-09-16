@@ -17,7 +17,7 @@ ROOT = Path(__file__).resolve().parents[1]
 RESULTS_DIR = ROOT / "results"
 TRACKING_FILE = ROOT / "video_creation" / "data" / "videos.json"
 MANIFEST_FILE = RESULTS_DIR / "daily_manifest.csv"
-VIDEO_COUNT = 10
+VIDEO_COUNT = 3
 
 
 def verify_config() -> None:
@@ -124,8 +124,8 @@ def main() -> int:
         except Exception as error:
             print(f"Video {iteration}/{VIDEO_COUNT} failed: {type(error).__name__}: {error}", flush=True)
         if iteration < VIDEO_COUNT:
-            print("Waiting 15 seconds before the next video...", flush=True)
-            time.sleep(15)
+            print("Waiting 45 seconds before the next video...", flush=True)
+            time.sleep(45)
     print(f"Batch complete: {successes}/{VIDEO_COUNT} videos succeeded", flush=True)
     return 0 if successes else 1
 
