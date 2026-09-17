@@ -86,7 +86,7 @@ def get_screenshots_of_reddit_posts(reddit_object: dict, screenshot_num: int):
     screenshot_num: int
     with sync_playwright() as p:
         print_substep("Launching Headless Browser...")
-        browser = p.chromium.launch(headless=True)
+        browser = p.chromium.launch(headless=True, channel="chrome")
         dsf = (W // 600) + 1
 
         context = browser.new_context(
