@@ -132,11 +132,12 @@ def get_screenshots_of_reddit_posts(reddit_object: dict, screenshot_num: int):
         page.goto(reddit_object["thread_url"], timeout=0)
         page.set_viewport_size(ViewportSize(width=W, height=H))
         page.wait_for_load_state()
-        page.wait_for_timeout(5000)
+        page.wait_for_timeout(8000)
         print(f"DEBUG: navigating to {page.url}")
         page.screenshot(path=f"debug_page_{reddit_id}.png", full_page=True)
         print(f"DEBUG: page title = {page.title()}")
         print(f"DEBUG: page content first 500 chars = {page.content()[:500]}")
+        print(f"DEBUG: js_challenge present = {'js_challenge' in page.url}")
 
         if page.locator(
             "#t3_12hmbug > div > div._3xX726aBn29LDbsDtzr_6E._1Ap4F5maDtT1E1YuCiaO0r.D3IL3FD0RFy_mkKLPwL4 > div > div > button"
